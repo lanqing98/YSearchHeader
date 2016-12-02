@@ -13,7 +13,6 @@ class YSearchHeader: UIView, UITableViewDelegate, UITableViewDataSource {
     public let KYSearchHeaderLeft:String = "left";
     //右按钮标示
     public let KYSearchHeaderRight:String = "right";
-    
     public var leftNormalTitle:String = "全部地区";
     public var rightNormalTitle:String = "全部采购";
     public var leftItem:[String] = [];
@@ -38,14 +37,7 @@ class YSearchHeader: UIView, UITableViewDelegate, UITableViewDataSource {
         self.backgroundColor = UIColor.white;
         onSetView();
     }
-    init(frame: CGRect,params:[serchHeaderParams]?) {
-        super.init(frame: frame);
-        self.backgroundColor = UIColor.white;
-        onSetView();
-    }
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    
     //设置参数
     public func onSetParams(params:[serchHeaderParams]?) {
         if let p = params {
@@ -106,7 +98,7 @@ class YSearchHeader: UIView, UITableViewDelegate, UITableViewDataSource {
     }
     //灰底背景
     private func onSetBackView() {
-        bgView = UIView.init(frame: CGRect.init(x: 0, y: self.frame.origin.y + self.frame.height, width: self.frame.width, height: (self.superview?.frame.height)! - self.frame.height + 10));
+        bgView = UIView.init(frame: CGRect.init(x: 0, y: self.frame.origin.y + self.frame.height, width: self.superview?.frame.height ?? 0, height: UIScreen.main.bounds.height));
         bgView?.backgroundColor = UIColor.init(hex: "000000", alpha: 0.3);
         bgView?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onTouch)));
         bgView?.alpha = 0;
@@ -117,7 +109,8 @@ class YSearchHeader: UIView, UITableViewDelegate, UITableViewDataSource {
     }
     //TB self.frame.origin.y + self.frame.height
     private func onSetTableView() {
-        tableView = UITableView.init(frame: CGRect.init(x: 0, y: -((self.superview?.frame.height)! - self.frame.height - 176), width: self.frame.width, height: (self.superview?.frame.height)! - self.frame.height - 176), style: UITableViewStyle.plain);
+        
+        tableView = UITableView.init(frame: CGRect.init(x: 0, y: -(UIScreen.main.bounds.height * 2/3 - 64 - self.frame.height), width: self.superview?.frame.height ?? 0, height: UIScreen.main.bounds.height * 2/3 - 64 - self.frame.height), style: UITableViewStyle.plain);
         let view = UIView();
         tableView?.backgroundColor = UIColor.clear;
         view.backgroundColor = UIColor.clear;
@@ -161,8 +154,8 @@ class YSearchHeader: UIView, UITableViewDelegate, UITableViewDataSource {
             self.tableView?.frame.size.height = 0;
             self.bgView?.alpha = 0;
         }, completion: {(a) -> Void in
-            self.tableView?.frame.origin.y = -((self.superview?.frame.height)! - self.frame.height - 176);
-            self.tableView?.frame.size.height = (self.superview?.frame.height)! - self.frame.height - 176;
+            self.tableView?.frame.origin.y = -(UIScreen.main.bounds.height * 2/3 - 64 - self.frame.height);
+            self.tableView?.frame.size.height = UIScreen.main.bounds.height * 2/3 - 64 - self.frame.height;
         })
     }
     
@@ -210,11 +203,11 @@ class YSearchHeader: UIView, UITableViewDelegate, UITableViewDataSource {
         if showType == showTBType.left {
             leftIndex = indexPath.row;
             onSetButtonTitle(button: left!, title: leftItem[indexPath.row]);
-            deletage?.YSearchHeader(type: KYSearchHeaderLeft, didSelectCell: leftIndex, title: leftItem[indexPath.row]);
+            deletage?.YSearchHeader(view: self, type: KYSearchHeaderLeft, didSelectCell: leftIndex, title: leftItem[indexPath.row]);
         }else if showType == showTBType.right {
             rightIndex = indexPath.row;
             onSetButtonTitle(button: right!, title: rightItem[indexPath.row]);
-            deletage?.YSearchHeader(type: KYSearchHeaderRight, didSelectCell: rightIndex, title: rightItem[indexPath.row]);
+            deletage?.YSearchHeader(view: self, type: KYSearchHeaderRight, didSelectCell: rightIndex, title: rightItem[indexPath.row]);
         }
         close();
     }
@@ -266,9 +259,18 @@ class YSearchHeader: UIView, UITableViewDelegate, UITableViewDataSource {
         context.strokePath();
     }
 }
-
+extension YSearchHeader {
+    
+    func showMenu() {
+        show();
+    }
+    
+    func hideMenu() {
+        close();
+    }
+}
 protocol YSearchHeaderDelegate {
-    func YSearchHeader(type:String,didSelectCell index:Int,title:String);
+    func YSearchHeader(view:YSearchHeader,type:String,didSelectCell index:Int,title:String);
 }
 enum serchHeaderParams {
     case leftNormalTitle(String);

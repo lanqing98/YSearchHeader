@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController,YSearchHeaderDelegate {
 
     
     @IBOutlet weak var serch: YSearchHeader!
@@ -24,6 +24,7 @@ class ViewController: UIViewController {
             serchHeaderParams.tincolor(UIColor.init(hex: "FF7817"))
         ];
         serch.onSetParams(params: params);
+        serch.deletage = self;
     }
     
     override func didReceiveMemoryWarning() {
@@ -31,7 +32,18 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        //切换界面的时候隐藏
+        serch.hideMenu();
+    }
     
+    func YSearchHeader(view: YSearchHeader, type: String, didSelectCell index: Int, title: String) {
+        if type == view.KYSearchHeaderLeft {
+            //左边按钮
+        }else if type == view.KYSearchHeaderRight {
+            //右边按钮
+        }
+    }
 
 }
 
