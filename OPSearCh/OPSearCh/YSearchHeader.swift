@@ -18,7 +18,7 @@ class YSearchHeader: UIView, UITableViewDelegate, UITableViewDataSource {
     public var leftItem:[String] = [];
     public var rightItem:[String] = [];
     public var tinColor:UIColor = UIColor.init(hex: "FF7817");
-    public var deletage:YSearchHeaderDelegate?;
+    weak public var deletage:YSearchHeaderDelegate?;
     private var left:LeftT_Button?;
     private var right:LeftT_Button?;
     private var bgView:UIView?;
@@ -269,7 +269,7 @@ extension YSearchHeader {
         close();
     }
 }
-protocol YSearchHeaderDelegate {
+@objc protocol YSearchHeaderDelegate {
     func YSearchHeader(view:YSearchHeader,type:String,didSelectCell index:Int,title:String);
 }
 enum serchHeaderParams {
